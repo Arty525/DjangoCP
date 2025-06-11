@@ -1,0 +1,10 @@
+{% extends 'sender/base.html' %}
+{% block title %}Список получателей рассылки{% endblock %}
+{% block content %}
+<a href="{% url 'sender:add_recipient' %}" class="btn btn-outline-primary">Добавить получателя</a>
+<div class="list-group">
+  {% for recipient in recipients %}
+  <a href="{% url 'sender:recipient' recipient.pk %}" class="list-group-item list-group-item-action">{{ recipient }} ({{ recipient.comment }})</a>
+  {% endfor %}
+</div>
+{% endblock %}

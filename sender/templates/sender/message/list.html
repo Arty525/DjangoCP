@@ -1,0 +1,10 @@
+{% extends 'sender/base.html' %}
+{% block title %}Список сообщений рассылки{% endblock %}
+{% block content %}
+<a href="{% url 'sender:add_message' %}" class="btn btn-outline-primary">Добавить сообщение</a>
+<div class="list-group">
+  {% for message in messages %}
+  <a href="{% url 'sender:message' message.pk %}" class="list-group-item list-group-item-action">{{ message }}</a>
+  {% endfor %}
+</div>
+{% endblock %}

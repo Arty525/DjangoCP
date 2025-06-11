@@ -1,0 +1,8 @@
+{% extends 'sender/base.html' %}
+{% block title %}{{ recipient.full_name }}{% endblock %}
+{% block content %}
+<a href="{% url 'sender:update_message' message.pk %}" class="btn btn-outline-primary">Изменить сообщение</a>
+<h1>{{ message.title }}</h1>
+<p>{{ message.body }}</p>
+<a href="{% url 'sender:delete_message' message.pk %}" class="btn btn-danger">Удалить</a>
+{% endblock %}

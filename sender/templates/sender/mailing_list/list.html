@@ -1,0 +1,10 @@
+{% extends 'sender/base.html' %}
+{% block title %}Список рассылок{% endblock %}
+{% block content %}
+<a href="{% url 'sender:add_mailing_list' %}" class="btn btn-outline-primary">Создать новую рассылку</a>
+<div class="list-group">
+  {% for mailing_list in mailing_lists %}
+  <a href="{% url 'sender:mailing_list' mailing_list.pk %}" class="list-group-item list-group-item-action">Сообщение: {{ mailing_list.message }} | Получатели: {{ mailing_list.recipients }}</a>
+  {% endfor %}
+</div>
+{% endblock %}
