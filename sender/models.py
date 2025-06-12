@@ -1,4 +1,11 @@
+import os
+import smtplib
+
+from django.core.mail import send_mail
 from django.db import models
+
+from config import settings
+
 
 # Create your models here.
 
@@ -31,18 +38,71 @@ class MailingList(models.Model):
     STATUS_CHOICES = [
         ('created', 'Создана'),
         ('started', 'Запущена'),
-        ('complited', 'Завершена'),
+        ('completed', 'Завершена'),
     ]
 
-    date_first_sent = models.DateField(verbose_name='Дата первой отправки', auto_now_add=True)
-    date_last_sent = models.DateField(verbose_name='Дата последней отправки', auto_now=True)
+    date_first_sent = models.DateTimeField(verbose_name='Дата первой отправки', auto_now_add=True)
+    date_last_sent = models.DateTimeField(verbose_name='Дата последней отправки', auto_now=True)
     status = models.CharField(verbose_name='Статус', choices=STATUS_CHOICES, max_length=10, default='created')
     message = models.ForeignKey(Message, verbose_name='Сообщение', on_delete=models.CASCADE)
     recipients = models.ManyToManyField(Recipient, verbose_name='Получатели')
 
+    def send(self):
+        self.status = 'started'
+        self.save()
+
+        subject = self.message.title
+        message = self.message.body
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [r.email for r in self.recipients.all()]
+
+        try:
+            # Отправка писем
+            success_count = send_mail(
+                subject,
+                message,
+                from_email,
+                recipient_list,
+                fail_silently=False,
+            )
+
+            # Логирование результата
+            self.status = 'completed'
+            self.save()
+
+            SendAttempt.objects.create(
+                mailing_list=self,
+                status='Успешно',
+                response=f"Письма успешно отправлены",
+            )
+
+            return success_count
+
+        except smtplib.SMTPException as e:
+            self.status = 'completed'
+            self.save()
+
+            SendAttempt.objects.create(
+                mailing_list=self,
+                status='Не успешно',
+                response=f"SMTP ошибка: {str(e)}",
+            )
+            raise
+
+        except Exception as e:
+            self.status = 'completed'
+            self.save()
+
+            SendAttempt.objects.create(
+                mailing_list=self,
+                status='Не успешно',
+                response=f"Неизвестная ошибка: {str(e)}",
+            )
+            raise
+
 
 class SendAttempt(models.Model):
-    date = models.DateField(verbose_name='Дата', auto_now_add=True)
+    date = models.DateTimeField(verbose_name='Дата', auto_now_add=True)
     status = models.CharField(verbose_name='Статус', max_length=50)
     response = models.TextField(verbose_name='Ответ сервера')
     mailing_list = models.ForeignKey(MailingList, verbose_name='Рассылка', on_delete=models.CASCADE)

@@ -1,6 +1,7 @@
 {% extends 'sender/base.html' %}
 {% block title %}Главная{% endblock %}
 {% block content %}
-<p>Всего рассылок: {{ mailing_lists|length }}</p>
-<p>Активных рассылок: {{ active_mailing_lists|length }}</p>
+<p>Всего рассылок: {{ mailing_lists }}</p>
+<p>Активных рассылок: {{ active_mailing_lists}}</p>
+<p>Уникальных получателей: {{ unique_recipients }}</p>
 {% endblock %}

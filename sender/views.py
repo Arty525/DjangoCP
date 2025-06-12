@@ -1,5 +1,10 @@
-from django.shortcuts import render
+import json
+from urllib import request
+
+from django.http import HttpResponse
+from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DetailView, DeleteView
 
 from .forms import RecipientForm, MessageForm, MailingListForm
@@ -11,11 +16,13 @@ class MailingListView(ListView):
     template_name = 'sender/index.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        active_mailing_lists = MailingList.objects.filter(status='Запущена')
+        active_mailing_lists = MailingList.objects.filter(status='started')
         mailing_lists = MailingList.objects.all()
+        unique_recipients = Recipient.objects.all()
         context = {
-            'mailing_lists': mailing_lists,
-            'active_mailing_lists': active_mailing_lists
+            'mailing_lists': mailing_lists.count(),
+            'active_mailing_lists': active_mailing_lists.count(),
+            'unique_recipients': unique_recipients.count()
         }
         return context
 
@@ -129,5 +136,13 @@ class MailingListsListView(ListView):
     model = MailingList
     template_name = 'sender/mailing_list/list.html'
     context_object_name = 'mailing_lists'
+
+
+class RunSend(View):
+    success_url = reverse_lazy('sender:mailing_lists')
+    def post(self, request, *args, **kwargs):
+        mailing_list = get_object_or_404(MailingList, id=self.kwargs['pk'])
+        result = mailing_list.send()
+        return redirect(self.success_url)
 
 

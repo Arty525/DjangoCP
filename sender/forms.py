@@ -28,10 +28,9 @@ class MessageForm(forms.ModelForm):
 class MailingListForm(forms.ModelForm):
     class Meta:
         model = MailingList
-        fields = '__all__'
+        fields = ['message', 'recipients']
 
         def __init__(self):
             super(RecipientForm, self).__init__()
-            self.fields['status'].widget.attrs.update({'class': 'dropdown', 'placeholder': 'Status'})
             self.fields['message'].widgets.attrs.update({'class': 'dropdown', 'placeholder': 'Message'})
             self.fields['recipients'].widgets.attrs.update({'class': 'form-check', 'placeholder': 'Recipients'})
