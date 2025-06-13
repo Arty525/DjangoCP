@@ -3,4 +3,7 @@
 {% block content %}
 <p>{{ user.email }}</p>
 <p>{{ user.username }}</p>
+<p>Успешных попыток отправки: {{ success_attempts }}</p>
+<p>Не успешных попыток отправки: {{ fail_attempts }}</p>
+<p>Отправлено сообщений: {{ sent_messages }}</p>
 {% endblock %}

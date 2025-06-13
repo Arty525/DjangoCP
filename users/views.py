@@ -10,6 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from config.settings import EMAIL_HOST_USER
 from .forms import CustomUserCreationForm, CustomUserUpdateForm, PasswordRecoveryRequestForm, PasswordChangeForm
 from .models import CustomUser
+from sender.services import UserStatistic
 
 
 class RegistrationView(CreateView):
@@ -36,6 +37,14 @@ class CustomLogoutView(LogoutView):
 
 
 class ProfileView(TemplateView):
+    def get_context_data(self, **kwargs):
+        statistic = UserStatistic.get_user_statistic(kwargs['pk'])
+        context = {
+            'success_attempts': statistic[0],
+            'fail_attempts': statistic[1],
+            'sent_messages': statistic[2],
+        }
+        return context
     template_name = 'users/profile.html'
 
 class ProfileUpdateView(UpdateView):

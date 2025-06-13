@@ -101,6 +101,10 @@ class MailingListCreateView(CreateView):
     model = MailingList
     template_name = 'sender/mailing_list/add.html'
     form_class = MailingListForm
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy('sender:mailing_list', kwargs={'pk': self.object.pk})
 

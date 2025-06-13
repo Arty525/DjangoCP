@@ -1,8 +1,10 @@
 import os
 import smtplib
 
+from django.contrib.auth import user_logged_in
 from django.core.mail import send_mail
 from django.db import models
+from users.models import CustomUser
 
 from config import settings
 
@@ -46,6 +48,7 @@ class MailingList(models.Model):
     status = models.CharField(verbose_name='Статус', choices=STATUS_CHOICES, max_length=10, default='created')
     message = models.ForeignKey(Message, verbose_name='Сообщение', on_delete=models.CASCADE)
     recipients = models.ManyToManyField(Recipient, verbose_name='Получатели')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def send(self):
         self.status = 'started'
@@ -74,6 +77,7 @@ class MailingList(models.Model):
                 mailing_list=self,
                 status='Успешно',
                 response=f"Письма успешно отправлены",
+                user=self.user,
             )
 
             return success_count
@@ -86,6 +90,7 @@ class MailingList(models.Model):
                 mailing_list=self,
                 status='Не успешно',
                 response=f"SMTP ошибка: {str(e)}",
+                user=self.user,
             )
             raise
 
@@ -97,6 +102,7 @@ class MailingList(models.Model):
                 mailing_list=self,
                 status='Не успешно',
                 response=f"Неизвестная ошибка: {str(e)}",
+                user=self.user,
             )
             raise
 
@@ -106,10 +112,9 @@ class SendAttempt(models.Model):
     status = models.CharField(verbose_name='Статус', max_length=50)
     response = models.TextField(verbose_name='Ответ сервера')
     mailing_list = models.ForeignKey(MailingList, verbose_name='Рассылка', on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = 'Состояние рассылки'
         verbose_name_plural = 'Состояния рассылок'
         ordering = ['status', 'date']
-
-
