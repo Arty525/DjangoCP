@@ -1,13 +1,14 @@
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.views import LogoutView, LoginView
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import  reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from config.settings import EMAIL_HOST_USER
-from .forms import CustomUserCreationForm, CustomUserUpdateForm
+from .forms import CustomUserCreationForm, CustomUserUpdateForm, PasswordRecoveryRequestForm, PasswordChangeForm
 from .models import CustomUser
 
 
@@ -54,3 +55,42 @@ class VerifyEmailView(View):
 
 class SuccessVerifyView(TemplateView):
     template_name = 'users/success_verify.html'
+
+
+class PasswordRecoveryRequestView(FormView):
+    model = CustomUser
+    template_name = 'users/password_recovery_request.html'
+    form_class = PasswordRecoveryRequestForm
+    success_url = reverse_lazy('users:password_recovery_request_success')
+
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        user_pk = get_object_or_404(CustomUser, email=email)
+        recovery_url = reverse_lazy('users:password_change', kwargs={'pk': user_pk.pk})
+        absolute_url = self.request.build_absolute_uri(recovery_url)
+
+        send_mail(
+            subject="Восстановление пароля",
+            message=f"Для восстановления пароля пройдите по ссылке:\n{absolute_url}\nЕсли вы не запрашивали восстановление пароля, то проигнорируйте это письмо",
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[email],
+        )
+        return redirect(reverse_lazy('users:password_recovery_request_success'))
+
+
+class PassRecoveryRequsetSuccess(TemplateView):
+    template_name = 'users/password_recovery_request_success.html'
+
+
+class PasswordChangeView(FormView):
+    model = CustomUser
+    template_name = 'users/password_recovery.html'
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('users:login')
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(CustomUser, pk=kwargs['pk'])
+        print(user.email)
+        user.set_password(request.POST.get('password1'))
+        user.save()
+        update_session_auth_hash(request, user)
+        return redirect(reverse_lazy('users:login'))

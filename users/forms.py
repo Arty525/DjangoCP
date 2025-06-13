@@ -1,5 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+
+from config.settings import EMAIL_HOST_USER
 from .models import CustomUser
 
 # Форма регистрации
@@ -53,3 +58,35 @@ class CustomUserLoginForm(forms.Form):
                 'Ваш email не подтвержден. Пожалуйста, проверьте вашу почту.',
                 code='email_not_verified',
             )
+
+
+class PasswordRecoveryRequestForm(forms.Form):
+    email = forms.EmailField()
+    class Meta:
+        model = CustomUser
+        fields = ['email']
+        REQUIRED_FIELDS = []
+
+    def __init__(self, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+
+        self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email'})
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            user = CustomUser.objects.get(email=email)
+        except:
+            raise forms.ValidationError('Пользователя с таким email не существует')
+        return email
+
+
+class PasswordChangeForm(forms.Form):
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+
+        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Новый пароль'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Новый пароль'})

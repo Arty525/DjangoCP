@@ -3,7 +3,9 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import RegistrationView, LogoutView, ProfileView, ProfileUpdateView, VerifyEmailView, SuccessVerifyView
+from .forms import PasswordChangeForm
+from .views import RegistrationView, LogoutView, ProfileView, ProfileUpdateView, VerifyEmailView, SuccessVerifyView, \
+    PasswordChangeView, PasswordRecoveryRequestView, PassRecoveryRequsetSuccess
 
 app_name = 'users'
 
@@ -15,6 +17,9 @@ urlpatterns = [
     path('update/<int:pk>', ProfileUpdateView.as_view(), name='update'),
     path('verify_email/<int:pk>/', VerifyEmailView.as_view(), name='verify_email'),
     path('success_verify/', SuccessVerifyView.as_view(), name='success_verify'),
+    path('password_recovery_request/', PasswordRecoveryRequestView.as_view(), name='password_recovery_request'),
+    path('password_recovery_request_success/', PassRecoveryRequsetSuccess.as_view(), name='password_recovery_request_success'),
+    path('password_change/<int:pk>/', PasswordChangeView.as_view(), name='password_change'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
