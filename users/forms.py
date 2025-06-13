@@ -4,8 +4,7 @@ from .models import CustomUser
 
 # Форма регистрации
 class CustomUserCreationForm(UserCreationForm):
-    username = forms.CharField(max_length=50, required=True)
-    email = forms.EmailField(required=True)
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
