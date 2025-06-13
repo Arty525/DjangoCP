@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LogoutView, LoginView
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import  reverse_lazy
@@ -33,6 +33,7 @@ class RegistrationView(CreateView):
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('sender:index')
 
+
 class ProfileView(TemplateView):
     template_name = 'users/profile.html'
 
@@ -47,7 +48,7 @@ class ProfileUpdateView(UpdateView):
 class VerifyEmailView(View):
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.get(pk=self.kwargs['pk'])
-        user.email_verified = True
+        user.is_active = True
         user.save()
         return redirect(reverse_lazy('users:success_verify'))
 

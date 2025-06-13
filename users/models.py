@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email")
-    email_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False, verbose_name="Активен")
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

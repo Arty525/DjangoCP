@@ -46,8 +46,10 @@ class CustomUserLoginForm(forms.Form):
         self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email'})
         self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Пароль'})
 
-    def form_valid(self, form):
-        if self.email_verified == True:
-            return self.email
-        else:
-            raise form.ValidationError('Необходимо подтвердить email. Ссылка была отправлена на вашу почту при регистрации')
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        if not user.is_active:
+            raise forms.ValidationError(
+                'Ваш email не подтвержден. Пожалуйста, проверьте вашу почту.',
+                code='email_not_verified',
+            )
