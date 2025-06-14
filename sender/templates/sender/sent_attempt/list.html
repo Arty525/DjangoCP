@@ -1,0 +1,9 @@
+{% extends 'sender/base.html' %}
+{% block title %}Список попыток рассылки{% endblock %}
+{% block content %}
+<ul class="list-group">
+  {% for sent_attempt in sent_attempt_list %}
+        <li class="list-group-item">{{ sent_attempt }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -13,6 +13,9 @@
     <li class="nav-item">
         <a class="nav-link" href="{% url 'sender:mailing_lists' %}">Рассылки</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'sender:sent_attempts_list' %}">Список состояний рассылок</a>
+    </li>
     {% if perms.users.can_view_user_list %}
     <li class="nav-item">
         <a class="nav-link" href="{% url 'users:user_list' %}">Список пользователей</a>

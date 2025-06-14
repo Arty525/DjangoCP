@@ -6,20 +6,37 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sender', '0005_alter_mailinglist_options_alter_message_options_and_more'),
+        ("sender", "0005_alter_mailinglist_options_alter_message_options_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='mailinglist',
-            options={'permissions': [('can_view_mailing_list', 'Can view mailing list'), ('can_turn_off', 'Can turn off mailing list')], 'verbose_name': 'Рассылка', 'verbose_name_plural': 'Рассылки'},
+            name="mailinglist",
+            options={
+                "permissions": [
+                    ("can_view_mailing_list", "Can view mailing list"),
+                    ("can_turn_off", "Can turn off mailing list"),
+                ],
+                "verbose_name": "Рассылка",
+                "verbose_name_plural": "Рассылки",
+            },
         ),
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['title'], 'permissions': [('can_view_message', 'Can view message')], 'verbose_name': 'Сообщение', 'verbose_name_plural': 'Сообщения'},
+            name="message",
+            options={
+                "ordering": ["title"],
+                "permissions": [("can_view_message", "Can view message")],
+                "verbose_name": "Сообщение",
+                "verbose_name_plural": "Сообщения",
+            },
         ),
         migrations.AlterModelOptions(
-            name='recipient',
-            options={'ordering': ['email'], 'permissions': [('can_view_recipient', 'Can view recipient')], 'verbose_name': 'Получатель', 'verbose_name_plural': 'Получатели'},
+            name="recipient",
+            options={
+                "ordering": ["email"],
+                "permissions": [("can_view_recipient", "Can view recipient")],
+                "verbose_name": "Получатель",
+                "verbose_name_plural": "Получатели",
+            },
         ),
     ]

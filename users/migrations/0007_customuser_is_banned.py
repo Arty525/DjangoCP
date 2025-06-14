@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0006_alter_customuser_options'),
+        ("users", "0006_alter_customuser_options"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='is_banned',
-            field=models.BooleanField(default=False, verbose_name='Бан'),
+            model_name="customuser",
+            name="is_banned",
+            field=models.BooleanField(default=False, verbose_name="Бан"),
         ),
     ]

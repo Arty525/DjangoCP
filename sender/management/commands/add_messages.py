@@ -4,9 +4,9 @@ from sender.models import Message
 
 
 class Command(BaseCommand):
-    help = 'Adds test recipients to database'
+    help = "Adds test recipients to database"
 
     def handle(self, *args, **options):
         Message.objects.all().delete()
-        call_command('loaddata', 'messages_fixture.json')
-        self.stdout.write(self.style.SUCCESS('Successfully added messages'))
+        call_command("loaddata", "messages_fixture.json")
+        self.stdout.write(self.style.SUCCESS("Successfully added messages"))
