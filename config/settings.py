@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "users.middleware.BlockedUserMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -94,6 +95,9 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT", default="5432"),
+        'OPTIONS': {
+            'client_encoding': 'UTF8',  # Явно указываем кодировку
+        },
     }
 }
 

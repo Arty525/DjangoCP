@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 from .forms import PasswordChangeForm
 from .views import RegistrationView, LogoutView, ProfileView, ProfileUpdateView, VerifyEmailView, SuccessVerifyView, \
-    PasswordChangeView, PasswordRecoveryRequestView, PassRecoveryRequsetSuccess
+    PasswordChangeView, PasswordRecoveryRequestView, PassRecoveryRequsetSuccess, UserListView, ChangeUserStatus
 
 app_name = 'users'
 
@@ -20,6 +20,8 @@ urlpatterns = [
     path('password_recovery_request/', PasswordRecoveryRequestView.as_view(), name='password_recovery_request'),
     path('password_recovery_request_success/', PassRecoveryRequsetSuccess.as_view(), name='password_recovery_request_success'),
     path('password_change/<int:pk>/', PasswordChangeView.as_view(), name='password_change'),
+    path('user_list/', UserListView.as_view(), name='user_list'),
+    path('ban_user/<int:pk>', ChangeUserStatus.as_view(), name='ban_user'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

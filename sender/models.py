@@ -15,6 +15,7 @@ class Recipient(models.Model):
     email = models.EmailField(verbose_name='Email', unique=True)
     full_name = models.CharField(verbose_name='Ф. И. О.')
     comment = models.TextField(verbose_name='Комментарий')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.email} - {self.full_name}'
@@ -23,6 +24,9 @@ class Recipient(models.Model):
         verbose_name = 'Получатель'
         verbose_name_plural = 'Получатели'
         ordering = ['email']
+        permissions = [
+            ("can_view_recipient", "Can view recipient"),
+        ]
 
 class Message(models.Model):
     title = models.CharField(verbose_name='Тема письма', max_length=255)
@@ -35,6 +39,9 @@ class Message(models.Model):
         verbose_name = 'Сообщение'
         verbose_name_plural = 'Сообщения'
         ordering = ['title']
+        permissions = [
+            ("can_view_message", "Can view message"),
+        ]
 
 class MailingList(models.Model):
     STATUS_CHOICES = [
@@ -43,14 +50,25 @@ class MailingList(models.Model):
         ('completed', 'Завершена'),
     ]
 
+    class Meta:
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+        permissions = [
+            ("can_view_mailing_list", "Can view mailing list"),
+            ("can_turn_off", "Can turn off mailing list"),
+        ]
+
     date_first_sent = models.DateTimeField(verbose_name='Дата первой отправки', auto_now_add=True)
     date_last_sent = models.DateTimeField(verbose_name='Дата последней отправки', auto_now=True)
     status = models.CharField(verbose_name='Статус', choices=STATUS_CHOICES, max_length=10, default='created')
     message = models.ForeignKey(Message, verbose_name='Сообщение', on_delete=models.CASCADE)
     recipients = models.ManyToManyField(Recipient, verbose_name='Получатели')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def send(self):
+        if not self.is_active:
+            raise
         self.status = 'started'
         self.save()
 

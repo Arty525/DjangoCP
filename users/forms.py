@@ -58,6 +58,11 @@ class CustomUserLoginForm(forms.Form):
                 'Ваш email не подтвержден. Пожалуйста, проверьте вашу почту.',
                 code='email_not_verified',
             )
+        if user.is_banned:
+            raise forms.ValidationError(
+                'Ваша учетная запись заблокирована.',
+                code='banned',
+            )
 
 
 class PasswordRecoveryRequestForm(forms.Form):

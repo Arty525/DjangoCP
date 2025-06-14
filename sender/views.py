@@ -1,6 +1,8 @@
 import json
+from pathlib import Path
 from urllib import request
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -9,7 +11,12 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView,
 
 from .forms import RecipientForm, MessageForm, MailingListForm
 from .models import Recipient, Message, MailingList, SendAttempt
+from dotenv import load_dotenv
 # Create your views here.
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 class MailingListView(ListView):
     model = MailingList
@@ -27,7 +34,7 @@ class MailingListView(ListView):
         return context
 
 
-class RecipientCreateView(CreateView):
+class RecipientCreateView(LoginRequiredMixin, CreateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'sender/recipients/add.html'
@@ -35,8 +42,12 @@ class RecipientCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('sender:index')
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class RecipientUpdateView(UpdateView):
+
+class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'sender/recipients/update.html'
@@ -45,33 +56,37 @@ class RecipientUpdateView(UpdateView):
         return reverse_lazy('sender:index')
 
 
-class RecipientListView(ListView):
+class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
     template_name = 'sender/recipients/list.html'
     context_object_name = 'recipients'
 
 
-class RecipientView(DetailView):
+class RecipientView(LoginRequiredMixin, DetailView):
     model = Recipient
     template_name = 'sender/recipients/recipient.html'
     context_object_name = 'recipient'
 
 
-class RecipientDeleteView(DeleteView):
+class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipient
     template_name = 'sender/recipients/delete.html'
     success_url = reverse_lazy('sender:index')
 
 
-class MessageCreateView(CreateView):
+class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     template_name = 'sender/message/add.html'
     form_class = MessageForm
     def get_success_url(self):
         return reverse_lazy('sender:message', kwargs={'pk': self.object.pk})
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class MessageUpdateView(UpdateView):
+
+class MessageUpdateView(LoginRequiredMixin, UpdateView):
     model = Message
     template_name = 'sender/message/update.html'
     form_class = MessageForm
@@ -79,25 +94,25 @@ class MessageUpdateView(UpdateView):
         return reverse_lazy('sender:message', kwargs={'pk': self.object.pk})
 
 
-class MessageListView(ListView):
+class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'sender/message/list.html'
     context_object_name = 'messages'
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = 'sender/message/delete.html'
     success_url = reverse_lazy('sender:messages_list')
 
 
-class MessageDetailView(DetailView):
+class MessageDetailView(LoginRequiredMixin, DetailView):
     model = Message
     template_name = 'sender/message/message.html'
     context_object_name = 'message'
 
 
-class MailingListCreateView(CreateView):
+class MailingListCreateView(LoginRequiredMixin, CreateView):
     model = MailingList
     template_name = 'sender/mailing_list/add.html'
     form_class = MailingListForm
@@ -108,7 +123,7 @@ class MailingListCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('sender:mailing_list', kwargs={'pk': self.object.pk})
 
-class MailingListUpdateView(UpdateView):
+class MailingListUpdateView(LoginRequiredMixin, UpdateView):
     model = MailingList
     template_name = 'sender/mailing_list/update.html'
     form_class = MailingListForm
@@ -116,13 +131,13 @@ class MailingListUpdateView(UpdateView):
         return reverse_lazy('sender:mailing_list', kwargs={'pk': self.object.pk})
 
 
-class MailingListDeleteView(DeleteView):
+class MailingListDeleteView(LoginRequiredMixin, DeleteView):
     model = MailingList
     template_name = 'sender/mailing_list/delete.html'
     success_url = reverse_lazy('sender:mailing_lists')
 
 
-class MailingListDetailView(DetailView):
+class MailingListDetailView(LoginRequiredMixin, DetailView):
     model = MailingList
     template_name = 'sender/mailing_list/mailing_list.html'
 
@@ -136,13 +151,13 @@ class MailingListDetailView(DetailView):
         return context
 
 
-class MailingListsListView(ListView):
+class MailingListsListView(LoginRequiredMixin, ListView):
     model = MailingList
     template_name = 'sender/mailing_list/list.html'
     context_object_name = 'mailing_lists'
 
 
-class RunSend(View):
+class RunSend(LoginRequiredMixin, View):
     success_url = reverse_lazy('sender:mailing_lists')
     def post(self, request, *args, **kwargs):
         mailing_list = get_object_or_404(MailingList, id=self.kwargs['pk'])

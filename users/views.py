@@ -1,17 +1,26 @@
+from pathlib import Path
+
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LogoutView
 from django.core.mail import send_mail
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import  reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
 from config.settings import EMAIL_HOST_USER
 from .forms import CustomUserCreationForm, CustomUserUpdateForm, PasswordRecoveryRequestForm, PasswordChangeForm
 from .models import CustomUser
 from sender.services import UserStatistic
+import os
+from dotenv import load_dotenv
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 class RegistrationView(CreateView):
     model = CustomUser
@@ -27,16 +36,16 @@ class RegistrationView(CreateView):
         send_mail(
             subject="Регистрация на сайте",
             message=f"Здравствуйте!\nВы зарегистрировались на сайте.\nДля подтверждения email перейдите по ссылке:\n{absolute_url}",
-            from_email=EMAIL_HOST_USER,
+            from_email=os.getenv('EMAIL_HOST_USER'),
             recipient_list=[email],
         )
         return super().form_valid(form)
 
-class CustomLogoutView(LogoutView):
+class CustomLogoutView(LoginRequiredMixin, LogoutView):
     next_page = reverse_lazy('sender:index')
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         statistic = UserStatistic.get_user_statistic(kwargs['pk'])
         context = {
@@ -47,7 +56,7 @@ class ProfileView(TemplateView):
         return context
     template_name = 'users/profile.html'
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     form_class = CustomUserUpdateForm
     def get_success_url(self):
@@ -81,7 +90,7 @@ class PasswordRecoveryRequestView(FormView):
         send_mail(
             subject="Восстановление пароля",
             message=f"Для восстановления пароля пройдите по ссылке:\n{absolute_url}\nЕсли вы не запрашивали восстановление пароля, то проигнорируйте это письмо",
-            from_email=EMAIL_HOST_USER,
+            from_email=os.getenv('EMAIL_HOST_USER'),
             recipient_list=[email],
         )
         return redirect(reverse_lazy('users:password_recovery_request_success'))
@@ -103,3 +112,27 @@ class PasswordChangeView(FormView):
         user.save()
         update_session_auth_hash(request, user)
         return redirect(reverse_lazy('users:login'))
+
+
+class UserListView(ListView):
+    model = CustomUser
+    template_name = 'users/user_list.html'
+    context_object_name = 'user_list'
+
+
+class ChangeUserStatus(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = get_object_or_404(CustomUser, id=pk)
+        if request.user.has_perm('sender.can_ban') and not user.is_superuser:
+            user.is_banned = not user.is_banned
+            user.save()
+            if user.is_banned:
+                email = user.email
+                send_mail(
+                    subject="Ваша учетная запись заблокирована",
+                    message=f"Здравствуйте, {user.username}! К сожалению Ваша учетная запись была заблокирована.",
+                    from_email=os.getenv('EMAIL_HOST_USER'),
+                    recipient_list=[email],
+                )
+            return redirect(reverse_lazy('users:user_list'))
+        return HttpResponseForbidden('У вас нет прав для блокировки этого пользователя')
