@@ -3,7 +3,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import MailingListView, RecipientCreateView, RecipientListView, RecipientView, RecipientDeleteView, \
     MessageCreateView, MessageUpdateView, MessageDeleteView, MessageListView, MessageDetailView, RecipientUpdateView, \
-    MailingListUpdateView, MailingListDeleteView, MailingListCreateView, MailingListsListView, MailingListDetailView, RunSend
+    MailingListUpdateView, MailingListDeleteView, MailingListCreateView, MailingListsListView, MailingListDetailView, \
+    RunSend, ChangeMailingListStatus
 
 app_name = 'sender'
 
@@ -29,5 +30,6 @@ urlpatterns = [
     path('mailing_list/add/', MailingListCreateView.as_view(), name='add_mailing_list' ),
     path('mailing_list/<int:pk>', MailingListDetailView.as_view(), name='mailing_list' ),
     path('mailing_list/<int:pk>/run_send', RunSend.as_view(), name='run_send'),
+    path('mailing_list/<int:pk>/turn_off', ChangeMailingListStatus.as_view(), name='turn_off'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

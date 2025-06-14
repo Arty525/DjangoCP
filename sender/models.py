@@ -1,5 +1,6 @@
 import os
 import smtplib
+from http.client import HTTPException
 
 from django.contrib.auth import user_logged_in
 from django.core.mail import send_mail
@@ -68,7 +69,7 @@ class MailingList(models.Model):
 
     def send(self):
         if not self.is_active:
-            raise
+            raise HTTPException('Вы не можете запустить рассылку т.к. она отключена менеджером')
         self.status = 'started'
         self.save()
 

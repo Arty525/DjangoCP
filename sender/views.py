@@ -3,7 +3,7 @@ from pathlib import Path
 from urllib import request
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -164,4 +164,13 @@ class RunSend(LoginRequiredMixin, View):
         result = mailing_list.send()
         return redirect(self.success_url)
 
+
+class ChangeMailingListStatus(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        mailing_list = get_object_or_404(MailingList, id=pk)
+        if request.user.has_perm('sender.can_turn_off') or mailing_list.user == request.user:
+            mailing_list.is_active = not mailing_list.is_active
+            mailing_list.save()
+            return redirect(reverse_lazy('sender:mailing_lists'))
+        return HttpResponseForbidden('У вас нет прав для отключения этой рассылки')
 

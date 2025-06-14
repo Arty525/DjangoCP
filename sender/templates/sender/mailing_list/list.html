@@ -4,10 +4,22 @@
 <a href="{% url 'sender:add_mailing_list' %}" class="btn btn-outline-primary">Создать новую рассылку</a>
 <div class="list-group">
   {% for mailing_list in mailing_lists %}
-  <a href="{% url 'sender:mailing_list' mailing_list.pk %}" class="list-group-item list-group-item-action">Сообщение: {{ mailing_list.message }} | Статус: {{ mailing_list.status }} <form method="post" action="{% url 'sender:run_send' mailing_list.pk %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-outline-primary">Отправить</button>
-  </form></a>
+  <a href="{% url 'sender:mailing_list' mailing_list.pk %}" class="list-group-item list-group-item-action">Сообщение: {{ mailing_list.message }} | Статус: {{ mailing_list.status }} | {% if mailing_list.is_active %}Активна{% else %}Отключена{% endif %}
+    <form method="post" action="{% url 'sender:run_send' mailing_list.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-primary">Запустить рассылку</button>
+    </form>
+      {% if perms.sender.can_turn_off %}
+    <form method="post" action="{% url 'sender:turn_off' mailing_list.pk %}" style="padding-top: 10px">
+        {% csrf_token %}
+        {% if mailing_list.is_active %}
+        <button type="submit" class="btn btn-outline-danger">Отключить</button>
+        {% else %}
+        <button type="submit" class="btn btn-outline-success">Включить</button>
+        {% endif %}
+      </form>
+      {% endif %}
+  </a>
   {% endfor %}
 </div>
 {% endblock %}
