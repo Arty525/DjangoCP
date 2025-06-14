@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email")
     is_active = models.BooleanField(default=False, verbose_name="Активен")
     is_banned = models.BooleanField(default=False, verbose_name='Бан')
+    is_staff = models.BooleanField(default=False, verbose_name='Сотрудник')
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

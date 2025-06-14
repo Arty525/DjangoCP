@@ -1,13 +1,15 @@
 from pathlib import Path
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.core.mail import send_mail
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import  reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 
@@ -46,6 +48,8 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'users/profile.html'
+    login_url = reverse_lazy('users:login')
     def get_context_data(self, **kwargs):
         statistic = UserStatistic.get_user_statistic(kwargs['pk'])
         context = {
@@ -56,9 +60,15 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return context
     template_name = 'users/profile.html'
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = CustomUser
     form_class = CustomUserUpdateForm
+    login_url = reverse_lazy('users:login')
+    def has_permission(self):
+        if self.request.user.is_superuser or self.request.user == self.get_object():
+            return True
+        return HttpResponseForbidden('У вас нет прав для изменения данных этого пользователя')
+
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
     template_name = 'users/update.html'
@@ -114,13 +124,17 @@ class PasswordChangeView(FormView):
         return redirect(reverse_lazy('users:login'))
 
 
-class UserListView(ListView):
+@method_decorator(cache_page(60 * 15), name='dispatch')
+class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = CustomUser
     template_name = 'users/user_list.html'
     context_object_name = 'user_list'
+    login_url = reverse_lazy('users:login')
+    permission_required = ('users.can_view_user_list',)
 
 
 class ChangeUserStatus(LoginRequiredMixin, View):
+    login_url = reverse_lazy('users:login')
     def post(self, request, pk):
         user = get_object_or_404(CustomUser, id=pk)
         if request.user.has_perm('sender.can_ban') and not user.is_superuser:

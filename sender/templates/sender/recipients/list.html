@@ -1,10 +1,17 @@
 {% extends 'sender/base.html' %}
 {% block title %}Список получателей рассылки{% endblock %}
 {% block content %}
+{% if not user.is_staff or user.is_superuser %}
 <a href="{% url 'sender:add_recipient' %}" class="btn btn-outline-primary">Добавить получателя</a>
-<div class="list-group">
+{% endif %}
+<ul class="list-group">
   {% for recipient in recipients %}
-  <a href="{% url 'sender:recipient' recipient.pk %}" class="list-group-item list-group-item-action">{{ recipient }} ({{ recipient.comment }})</a>
+  <li class="list-group-item">
+  <a href="{% url 'sender:recipient' recipient.pk %}" >{{ recipient }} ({{ recipient.comment }})</a>
+  {% if recipient.user == user or user.is_superuser %}
+  <a href="{% url 'sender:delete_recipient' recipient.pk %}" class="btn btn-danger">Удалить получателя</a>
+  {% endif %}
+  </li>
   {% endfor %}
-</div>
+</ul>
 {% endblock %}

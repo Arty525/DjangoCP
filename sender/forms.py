@@ -6,18 +6,19 @@ from .models import Recipient, Message, MailingList
 class RecipientForm(forms.ModelForm):
     class Meta:
         model = Recipient
-        fields = '__all__'
+        fields = ['email', 'full_name', 'comment']
 
         def __init__(self):
             super(RecipientForm, self).__init__()
             self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Email'})
-            self.fields['full_name'].widgets.attrs.update({'class': 'form-control', 'placeholder': 'Full Name'})
+            self.fields['full_name'].widgets.attrs.update({'class': 'form-control', 'placeholder': 'Ф. И. О.'})
+            self.fields['comment'].widgets.attrs.update({'class': 'form-control', 'placeholder': 'Комментарий'})
 
 
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['title', 'body']
 
         def __init__(self):
             super(RecipientForm, self).__init__()

@@ -1,4 +1,7 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 import smtplib
 from http.client import HTTPException
 
@@ -11,6 +14,10 @@ from config import settings
 
 
 # Create your models here.
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 class Recipient(models.Model):
     email = models.EmailField(verbose_name='Email', unique=True)
@@ -32,6 +39,7 @@ class Recipient(models.Model):
 class Message(models.Model):
     title = models.CharField(verbose_name='Тема письма', max_length=255)
     body = models.TextField(verbose_name='Тело письма')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.title
@@ -75,7 +83,7 @@ class MailingList(models.Model):
 
         subject = self.message.title
         message = self.message.body
-        from_email = settings.DEFAULT_FROM_EMAIL
+        from_email = os.getenv('EMAIL_HOST_USER')
         recipient_list = [r.email for r in self.recipients.all()]
 
         try:

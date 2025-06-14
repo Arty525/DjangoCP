@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import MailingListView, RecipientCreateView, RecipientListView, RecipientView, RecipientDeleteView, \
+from .views import MainView, RecipientCreateView, RecipientListView, RecipientView, RecipientDeleteView, \
     MessageCreateView, MessageUpdateView, MessageDeleteView, MessageListView, MessageDetailView, RecipientUpdateView, \
     MailingListUpdateView, MailingListDeleteView, MailingListCreateView, MailingListsListView, MailingListDetailView, \
     RunSend, ChangeMailingListStatus
@@ -9,8 +9,8 @@ from .views import MailingListView, RecipientCreateView, RecipientListView, Reci
 app_name = 'sender'
 
 urlpatterns = [
-    #главная
-    path('', MailingListView.as_view(), name='index'),
+#главная
+    path('', MainView.as_view(), name='index'),
     #получатели рассылок
     path('recipients/add/', RecipientCreateView.as_view(), name='add_recipient' ),
     path('recipients/list/', RecipientListView.as_view(), name='list_recipients' ),

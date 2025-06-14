@@ -3,6 +3,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{% url 'sender:index' %}">Главная</a>
     </li>
+    {% if user.is_authenticated %}
     <li class="nav-item">
         <a class="nav-link" href="{% url 'sender:list_recipients' %}">Список получателей</a>
     </li>
@@ -12,12 +13,13 @@
     <li class="nav-item">
         <a class="nav-link" href="{% url 'sender:mailing_lists' %}">Рассылки</a>
     </li>
+    {% if perms.users.can_view_user_list %}
     <li class="nav-item">
         <a class="nav-link" href="{% url 'users:user_list' %}">Список пользователей</a>
     </li>
-    {% if user.is_authenticated %}
+    {% endif %}
     <li class="nav-item">
-        <a  href="{% url 'users:profile' user.pk%}">{{ user.username }}</a>
+        <a class="nav-link" href="{% url 'users:profile' user.pk%}">{{ user.username }}</a>
     </li>
     <form method="post" action="{% url 'users:logout' %}">
         {% csrf_token %}
