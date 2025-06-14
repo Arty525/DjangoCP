@@ -9,17 +9,17 @@ class Command(BaseCommand):
     help = "Create new users"
 
     def handle(self, *args, **options):
-        username = input('Введите ваш email: ')
+        username = input("Введите ваш email: ")
         user = get_object_or_404(CustomUser, email=username)
         mailing_lists = MailingList.objects.filter(owner=user)
-        print('Список доступных рассылок:')
+        print("Список доступных рассылок:")
         for mailing_list in mailing_lists.filter(is_active=True):
             print(mailing_list)
 
-        pk = input('Введите id рассылки: ')
+        pk = input("Введите id рассылки: ")
 
         mailing_list = get_object_or_404(MailingList, id=pk)
         if mailing_list:
             mailing_list.send()
         else:
-            print('Не удалось выполнить рассылку')
+            print("Не удалось выполнить рассылку")

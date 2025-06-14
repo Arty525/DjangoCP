@@ -81,7 +81,7 @@ class MailingList(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f'id:{self.pk} | {self.message} | {self.recipients}'
+        return f"id:{self.pk} | {self.message} | {self.recipients}"
 
     def send(self):
         if not self.is_active:
@@ -154,7 +154,7 @@ class SendAttempt(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f"id рассылки: {self.mailing_list.pk}|{self.date} | {self.status} | {self.response} | {self.owner.username}"
+        return f"id:{self.mailing_list.pk}|{self.date} | {self.status} | {self.response} | {self.owner.username}"
 
     class Meta:
         verbose_name = "Состояние рассылки"

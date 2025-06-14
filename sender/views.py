@@ -311,6 +311,7 @@ class SendAttemptListView(LoginRequiredMixin, ListView):
     model = SendAttempt
     template_name = "sender/sent_attempt/list.html"
     context_object_name = "sent_attempt_list"
+
     def get_queryset(self):
         queryset = cache.get(f"sent_attempts:{self.request.user.pk}")
         if not queryset:

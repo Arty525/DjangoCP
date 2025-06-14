@@ -7,8 +7,16 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email")
     avatar = models.ImageField(upload_to="avatars", verbose_name="Аватар", blank=True)
-    phone_number = models.CharField(max_length=11, verbose_name="Номер телефона", null=True, unique=True, blank=False)
-    country = models.CharField(verbose_name='Страна', null=True, blank=True, max_length=100)
+    phone_number = models.CharField(
+        max_length=11,
+        verbose_name="Номер телефона",
+        null=True,
+        unique=True,
+        blank=False,
+    )
+    country = models.CharField(
+        verbose_name="Страна", null=True, blank=True, max_length=100
+    )
     is_active = models.BooleanField(default=False, verbose_name="Активен")
     is_banned = models.BooleanField(default=False, verbose_name="Бан")
     is_staff = models.BooleanField(default=False, verbose_name="Сотрудник")
