@@ -1,0 +1,15 @@
+{% extends 'sender/base.html' %}
+{% block title %}Удаление получателя{% endblock %}
+{% block content %}
+<div class="alert alert-danger" role="alert">
+    <h3>Вы действительно хотите удалить этого получателя?</h3>
+    <form method="post">
+        {% csrf_token%}
+        <div class="d-grid gap-2 d-md-block">
+            <button class="btn btn-primary" type="submit">Удалить</button>
+            <a href="{% url 'sender:index' %}" class="btn btn-outline-secondary" type="button">Отмена</a>
+        </div>
+    </form>
+  <p>{{ recipient }}</p>
+</div>
+{% endblock %}

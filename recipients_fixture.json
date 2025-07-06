@@ -1,0 +1,182 @@
+[
+  {
+    "model": "sender.recipient",
+    "pk": 1,
+    "fields": {
+      "email": "recipient1@testmail.ru",
+      "full_name": "Иванов Иван Иванович",
+      "comment": "Постоянный клиент с 2020 года"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 2,
+    "fields": {
+      "email": "recipient2@testmail.ru",
+      "full_name": "Петров Петр Петрович",
+      "comment": "Подписан на все рассылки"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 3,
+    "fields": {
+      "email": "recipient3@testmail.ru",
+      "full_name": "Сидорова Анна Михайловна",
+      "comment": "VIP-клиент"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 4,
+    "fields": {
+      "email": "recipient4@testmail.ru",
+      "full_name": "Кузнецов Дмитрий Сергеевич",
+      "comment": "Требует особого подхода"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 5,
+    "fields": {
+      "email": "recipient5@testmail.ru",
+      "full_name": "Смирнова Елена Владимировна",
+      "comment": "Часто делает возвраты"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 6,
+    "fields": {
+      "email": "recipient6@testmail.ru",
+      "full_name": "Васильев Алексей Николаевич",
+      "comment": "Любит акционные товары"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 7,
+    "fields": {
+      "email": "recipient7@testmail.ru",
+      "full_name": "Федорова Ольга Игоревна",
+      "comment": "Работает в партнёрской компании"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 8,
+    "fields": {
+      "email": "recipient8@testmail.ru",
+      "full_name": "Николаев Сергей Александрович",
+      "comment": "Никогда не отвечает на письма"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 9,
+    "fields": {
+      "email": "recipient9@testmail.ru",
+      "full_name": "Павлова Мария Дмитриевна",
+      "comment": "Очень довольный клиент"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 10,
+    "fields": {
+      "email": "recipient10@testmail.ru",
+      "full_name": "Морозов Андрей Викторович",
+      "comment": "Заказывает раз в квартал"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 11,
+    "fields": {
+      "email": "recipient11@testmail.ru",
+      "full_name": "Орлова Татьяна Сергеевна",
+      "comment": "Предпочитает телефонные звонки"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 12,
+    "fields": {
+      "email": "recipient12@testmail.ru",
+      "full_name": "Белов Игорь Олегович",
+      "comment": "Новый клиент, нужен follow-up"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 13,
+    "fields": {
+      "email": "recipient13@testmail.ru",
+      "full_name": "Ковалева Наталья Петровна",
+      "comment": "Корпоративный заказчик"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 14,
+    "fields": {
+      "email": "recipient14@testmail.ru",
+      "full_name": "Григорьев Артем Валерьевич",
+      "comment": "Жалуется на цены"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 15,
+    "fields": {
+      "email": "recipient15@testmail.ru",
+      "full_name": "Соколова Юлия Андреевна",
+      "comment": "Лояльный клиент 5+ лет"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 16,
+    "fields": {
+      "email": "recipient16@testmail.ru",
+      "full_name": "Титов Владислав Игоревич",
+      "comment": "Заказывает оптом"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 17,
+    "fields": {
+      "email": "recipient17@testmail.ru",
+      "full_name": "Комарова Екатерина Сергеевна",
+      "comment": "Только электронные чеки"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 18,
+    "fields": {
+      "email": "recipient18@testmail.ru",
+      "full_name": "Лебедев Максим Денисович",
+      "comment": "Часто меняет адрес доставки"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 19,
+    "fields": {
+      "email": "recipient19@testmail.ru",
+      "full_name": "Егорова Анастасия Павловна",
+      "comment": "Верифицированный аккаунт"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 20,
+    "fields": {
+      "email": "recipient20@testmail.ru",
+      "full_name": "Крылов Антон Юрьевич",
+      "comment": "Отписался от рассылки в 2023"
+    }
+  }
+]

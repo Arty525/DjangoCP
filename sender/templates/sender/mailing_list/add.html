@@ -1,0 +1,9 @@
+{% extends 'sender/base.html' %}
+{% block title %}Добавить рассылку{% endblock %}
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Добавить</button>
+</form>
+{% endblock %}
