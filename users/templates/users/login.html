@@ -1,0 +1,13 @@
+{% extends 'sender/base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<div align="center" style="padding-top: 35vh">
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Войти</button>
+    <a href="{% url 'users:registration' %}" type="button" class="btn btn-outline-primary">Регистрация</a>
+        <a href="{% url 'users:password_recovery_request' %}" type="button" class="btn btn-outline-primary">Восстановить пароль</a>
+    </form>
+</div>
+{% endblock %}

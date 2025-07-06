@@ -1,0 +1,46 @@
+{% extends 'sender/base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h1>Список пользователей</h1>
+{% if user_list %}
+<table class="table table-striped table-hover">
+  <thead>
+  <tr>
+    <th scope="col">ID</th>
+    <th scope="col">Имя пользователя</th>
+    <th scope="col">Email</th>
+    <th scope="col">Подтверждение email</th>
+    <th scope="col">Статус</th>
+    {% if perms.sender.can_ban %}
+    <th scope="col"></th>
+    {% endif %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for user in user_list %}
+  <tr>
+    <th scope="col">{{ user.pk }}</th>
+    <td>{{ user.username }}</td>
+    <td>{{ user.email }}</td>
+    <td>{% if user.is_active %}Подтвержден{% else %}Не подтвержден{% endif %}</td>
+    <td>{% if user.is_banned %}Заблокирован{% else %}Активен{% endif %}</td>
+    {% if perms.sender.can_ban %}
+    <td>
+      <form method="post" action="{% url 'users:ban_user' user.pk %}" style="padding-top: 10px">
+        {% csrf_token %}
+        {% if user.is_banned %}
+        <button type="submit" class="btn btn-outline-success">Разблокировать</button>
+        {% else %}
+        <button type="submit" class="btn btn-outline-danger">Заблокировать</button>
+        {% endif %}
+      </form>
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+Нет пользователей
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'sender/base.html' %}
+{% block title %}{{ recipient.full_name }}{% endblock %}
+{% block content %}
+<a href="{% url 'sender:mailing_list_update' mailing_list.pk %}" class="btn btn-outline-primary">Изменить рассылку</a>
+<h1>{{ mailing_list.message }}</h1>
+<p>{{ mailing_list.message.body }}</p>
+<p>Получатели:</p>
+<div class="list-group">
+    {% for recipient in recipients %}
+    <a href="{% url 'sender:recipient' recipient.pk %}" class="list-group-item list-group-item-action">{{ recipient }}</a>
+    {% endfor %}
+</div>
+{% if mailing_list.user == user or user.is_superuser %}
+  <form method="post" action="{% url 'sender:run_send' mailing_list.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-primary">Отправить</button>
+  </form>
+<a href="{% url 'sender:mailing_list_delete' mailing_list.pk %}" class="btn btn-danger">Удалить</a>
+{% endif %}
+{% endblock %}
